@@ -7,8 +7,6 @@ package tests;
  */
 
 import buffer.RingBuffer;
-import helper.BufferFactory;
-import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,8 +19,9 @@ import static org.hamcrest.CoreMatchers.is;
  *
  * @author hinterseber
  */
-public class RingBufferTest {
-    
+public class RingBufferTest 
+{
+    private RingBuffer<Integer> cut;
     public RingBufferTest() {
     }
     
@@ -36,6 +35,7 @@ public class RingBufferTest {
     
     @Before
     public void setUp() {
+        cut = new RingBuffer<>(2);
     }
     
     @After
@@ -44,13 +44,29 @@ public class RingBufferTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void zeroSizedRingBufferIsNotAllowed() {
-        RingBuffer rb = BufferFactory.createBufferWithSize(0);
+        RingBuffer<Integer> rb = new RingBuffer<>(0);
         assertNotNull(rb);
     }
     
     @Test
     public void creatingRingBufferOfSizeTwo() {
-        RingBuffer rb = BufferFactory.createBufferWithSize(2);
-        assertThat(rb.size(), is(2));
+        assertThat(cut.size(), is(2));
+        assertThat(cut.count(), is(0));
+    }
+    
+    
+    @Test
+    public void canAddElement() {
+        cut.add(1);        
+        assertThat(cut.count(), is(1));
+    }    
+    
+    @Test
+    public void canTakeElement() {
+        cut.add(1);
+        Integer ele = cut.take();
+        
+        assertNotNull(ele);
+        assertThat(cut.count(), is(0));
     }
 }
