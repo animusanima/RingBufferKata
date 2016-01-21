@@ -15,22 +15,41 @@ import java.util.ArrayList;
 public final class RingBuffer<T>
 {
     private final int bufferSize;
-    private ArrayList<T> elements;
+    private final ArrayList<T> elements;
     
     public RingBuffer(int size) {
-        if (size == 0)
-            throw new IllegalArgumentException("RingBuffer with zero size is not allowed.");
-        bufferSize = size;        
+        validateSize(size);
+        
+        bufferSize = size;
         elements = new ArrayList<>();
+    }
+
+    private void validateSize(int size) {
+        if (size <= 0)
+            throw new IllegalArgumentException("Only positive sizes are allowed.");
     }
     
     public void add(T element) {
+        if (isCapacityReached()) {
+          
+        }
         elements.add(element);
+    }
+
+    private boolean isCapacityReached() {
+        return count() >= size();
     }
     
     public T take() {
+        if (isEmpty())
+            throw new IllegalStateException("Can't call take() on an empty buffer.");
+        
         T ele = elements.remove(0);
         return ele;
+    }
+
+    private boolean isEmpty() {
+        return count() == 0;
     }
     
     public int count() {
@@ -40,4 +59,12 @@ public final class RingBuffer<T>
     public int size() {
         return bufferSize;
     }
+
+    @Override
+    public String toString() {
+        String res = "";
+        res = elements.stream().map((ele) -> ele.toString() + ",").reduce(res, String::concat);        
+        return res.substring(0, res.lastIndexOf(","));
+    }
+        
 }

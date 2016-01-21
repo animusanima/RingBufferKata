@@ -14,15 +14,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.is;
 
 /**
  *
  * @author hinterseber
  */
-public class RingBufferTest 
+public class IntegerRingBufferTest 
 {
     private RingBuffer<Integer> cut;
-    public RingBufferTest() {
+    public IntegerRingBufferTest() {
     }
     
     @BeforeClass
@@ -35,6 +36,7 @@ public class RingBufferTest
     
     @Before
     public void setUp() {
+        cut = null;
         cut = new RingBuffer<>(2);
     }
     
@@ -68,5 +70,53 @@ public class RingBufferTest
         
         assertNotNull(ele);
         assertThat(cut.count(), is(0));
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void takeFromEmptyBufferThrowsException() {
+        cut.take();
+    }
+    
+    @Test
+    public void overwriteFirstElementAfterAddingMoreElementsThanSize() {        
+        cut = new RingBuffer<>(3);
+        
+        cut.add(1);
+        cut.add(2);
+        cut.add(3);
+        cut.add(4);
+        
+        Integer ele = cut.take();
+        assertThat(ele, is(2));
+        assertThat(cut.size(), is(3));
+        assertThat(cut.count(), is(2));
+    }
+    
+    @Test
+    public void ringBufferKataFinalTest() {
+        cut = new RingBuffer<>(3);
+        
+        cut.add(1);
+        cut.add(2);
+                
+        assertThat(cut.size(), is(3));
+        assertThat(cut.count(), is(2));
+        
+        Integer ele = cut.take();
+        assertThat(ele, is(1));
+                
+        cut.add(3);
+        cut.add(4);
+        cut.add(5);
+        
+        ele = cut.take();
+        assertThat(ele, is(3));
+        
+        cut.add(6);
+        cut.add(7);
+        
+        assertThat(cut.count(), is(cut.size()));
+        
+        assertThat(cut.toString(), is("5,6,7"));
     }
 }

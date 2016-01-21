@@ -5,7 +5,7 @@
  */
 package suites;
 
-import tests.RingBufferTest;
+import tests.IntegerRingBufferTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  * @author hinterseber
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({RingBufferTest.class})
+@Suite.SuiteClasses({IntegerRingBufferTest.class})
 public class RingBufferTestSuite {
 
     @BeforeClass
