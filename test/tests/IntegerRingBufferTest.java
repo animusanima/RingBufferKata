@@ -15,6 +15,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.is;
+import strategy.RemoveFirstElementStrategy;
+import strategy.ThrowExceptionStrategy;
 
 /**
  *
@@ -118,5 +120,29 @@ public class IntegerRingBufferTest
         assertThat(cut.count(), is(cut.size()));
         
         assertThat(cut.toString(), is("5,6,7"));
+    }
+    
+    @Test
+    public void removeFirstEntryStrategy() {
+        cut = new RingBuffer<>(3);
+        cut.setStrategy(new RemoveFirstElementStrategy<>());
+        cut.add(3);
+        cut.add(4);
+        cut.add(5);
+        cut.add(7);
+        assertThat(cut.count(), is(3));
+
+        Integer ele = cut.take();
+        assertThat(ele, is(4));
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void throwExceptionStrategy() {
+        cut = new RingBuffer<>(3);
+        cut.setStrategy(new ThrowExceptionStrategy<>());
+        cut.add(3);
+        cut.add(4);
+        cut.add(5);
+        cut.add(7);
     }
 }

@@ -6,6 +6,8 @@
 package buffer;
 
 import java.util.ArrayList;
+import strategy.CapacityReachedStrategy;
+import strategy.RemoveFirstElementStrategy;
 
 /**
  *
@@ -16,13 +18,19 @@ public final class RingBuffer<T>
 {
     private final int bufferSize;
     private final ArrayList<T> elements;
+    private CapacityReachedStrategy<T> strategy;
     
     public RingBuffer(int size) {
         validateSize(size);
         
         bufferSize = size;
         elements = new ArrayList<>();
+        this.strategy = new RemoveFirstElementStrategy<>();
     }
+    
+    public void setStrategy(CapacityReachedStrategy<T> strategy) {
+        this.strategy = strategy;
+    }            
 
     private void validateSize(int size) {
         if (size <= 0)
@@ -31,8 +39,8 @@ public final class RingBuffer<T>
     
     public void add(T element) {
         if (isCapacityReached()) {
-          
-        }
+            strategy.execute(elements);
+        }        
         elements.add(element);
     }
 
